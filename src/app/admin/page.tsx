@@ -1,10 +1,16 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ControllerRenderProps, useForm } from "react-hook-form";
-import { z } from "zod";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import {
   Form,
   FormControl,
@@ -14,64 +20,120 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { X } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CheckIcon, X } from "lucide-react";
+import Image from "next/image";
+import { ControllerRenderProps, useForm } from "react-hook-form";
+import { z } from "zod";
 
 const FormSchema = z
   .object({
-    title: z.string({ required_error: "Please give a movie title" }),
+    title: z
+      .string({ required_error: "Please give a movie title" })
+      .min(1, { message: "Title should be minimum of length 1" }),
     year: z.number({ required_error: "Please give year of release" }),
     imdbRating: z.number({
       required_error: "Please give IMDB rating for the movie",
     }),
     runtime: z.number({ required_error: "Please runtime in minutes" }),
-    genre: z.array(z.string({ required_error: "Please give the movie genre" })),
+    genre: z
+      .array(z.string({ required_error: "Please give the movie genre" }))
+      .min(1, { message: "Select atleast one genre" }),
     plot: z.string({ required_error: "Please give plot of the movie" }),
     poster: z.string().optional(),
     trailer: z.string().optional(),
   })
-  .refine((data) => data.poster || data.trailer, {
-    message: "Either poster or trailer is required",
-    path: ["poster", "trailer"],
+  .superRefine((values, ctx) => {
+    console.log({ values, ctx });
+
+    if (!values.trailer && !values.poster) {
+      ctx.addIssue({
+        message: "Either poster or trailer should be filled in.",
+        code: z.ZodIssueCode.custom,
+        path: ["poster"],
+      });
+      ctx.addIssue({
+        message: "Either poster or trailer should be filled in.",
+        code: z.ZodIssueCode.custom,
+        path: ["trailer"],
+      });
+    }
   });
 
+const GENRES = [
+  {
+    label: "Action",
+    value: "Action",
+  },
+  {
+    label: "Thriller",
+    value: "Thriller",
+  },
+  {
+    label: "Comedy",
+    value: "Comedy",
+  },
+];
+
+export type FormSchemaType = z.infer<typeof FormSchema>;
+
 export default function Admin() {
-  const form = useForm<z.infer<typeof FormSchema>>({
+  const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       title: "",
       genre: [],
+      poster: "",
+      trailer: "",
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  function onSubmit(data: FormSchemaType) {
     console.log({ data });
   }
 
-  function onGenreRemove(
+  const handleSelectGenre = (
+    selectedGenre: string,
+    isSelected: boolean,
+    field: ControllerRenderProps<FormSchemaType, "genre">
+  ) => {
+    if (isSelected) {
+      const updatedOptions = field.value.filter(
+        (genre) => genre !== selectedGenre
+      );
+      field.onChange(updatedOptions);
+    } else {
+      const updatedOptions = [...field.value, selectedGenre];
+      field.onChange(updatedOptions);
+    }
+  };
+
+  const handleRemoveGenre = (
     genre: string,
-    field: ControllerRenderProps<z.infer<typeof FormSchema>, "genre">
-  ) {
-    const filteredGenres = field.value.filter((g) => g != genre);
+    field: ControllerRenderProps<FormSchemaType, "genre">
+  ) => {
+    const filteredGenres = field.value.filter((g) => g !== genre);
     field.onChange(filteredGenres);
-  }
+  };
 
   return (
     <div className="bg-[url('/admin-bg.png')] bg-contain bg-center h-screen flex items-center justify-center ">
-      <Card className="max-w-7xl w-full py-16 overflow-y-auto">
+      <Card className="max-w-7xl w-full py-8 overflow-y-auto">
         <CardContent className="max-w-xl w-full m-auto ">
-          <ScrollArea className="h-[70vh] px-2">
-            <div className="px-2">
-              <CardHeader className="px-0 pt-0">
+          <ScrollArea className="h-[80vh] px-2 ">
+            <div className="px-2 h-full ">
+              <div className="flex items-center justify-center">
+                <Image src="/logo.svg" width={60} height={60} alt="logo" />
+              </div>
+              <CardHeader className="px-0 pt-0 mt-4">
                 <CardTitle>Add Movie</CardTitle>
               </CardHeader>
               <Form {...form}>
@@ -114,33 +176,69 @@ export default function Admin() {
                     control={form.control}
                     name="genre"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="flex flex-col">
                         <FormLabel>Genre</FormLabel>
-                        <Select
-                          key={field.value[0] || ""}
-                          onValueChange={(genre) => {
-                            console.log({ genre });
-                            field.onChange([...field.value, genre]);
-                          }}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select a genre" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="action">action</SelectItem>
-                            <SelectItem value="thriller">thriller</SelectItem>
-                            <SelectItem value="comedy">comedy</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <div className="flex gap-2">
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              className="border w-full flex items-center justify-start text-muted-foreground"
+                            >
+                              select genre
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-full p-0" align="start">
+                            <Command>
+                              <CommandInput placeholder={""} />
+                              <CommandList>
+                                <CommandEmpty>No results found.</CommandEmpty>
+                                <CommandGroup>
+                                  {GENRES.map((option) => {
+                                    const isSelected = field.value.includes(
+                                      option.value
+                                    );
+                                    return (
+                                      <CommandItem
+                                        key={option.value}
+                                        onSelect={() =>
+                                          handleSelectGenre(
+                                            option.value,
+                                            isSelected,
+                                            field
+                                          )
+                                        }
+                                      >
+                                        <div
+                                          className={cn(
+                                            "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                                            isSelected
+                                              ? "bg-primary text-primary-foreground"
+                                              : "opacity-50 [&_svg]:invisible"
+                                          )}
+                                        >
+                                          <CheckIcon className="h-4 w-4 text-foreground" />
+                                        </div>
+
+                                        <span>{option.label}</span>
+                                      </CommandItem>
+                                    );
+                                  })}
+                                </CommandGroup>
+                              </CommandList>
+                            </Command>
+                          </PopoverContent>
+                        </Popover>
+                        <div className="flex gap-2 mt-2.5">
                           {field.value.map((genre) => (
-                            <Badge variant="outline" key={genre}>
+                            <Badge
+                              key={genre}
+                              variant="secondary"
+                              className="rounded-full"
+                            >
                               {genre}
                               <X
                                 className="w-3 h-3 ml-1 cursor-pointer"
-                                onClick={() => onGenreRemove(genre, field)}
+                                onClick={() => handleRemoveGenre(genre, field)}
                               />
                             </Badge>
                           ))}
@@ -158,7 +256,11 @@ export default function Admin() {
                         <FormItem>
                           <FormLabel>IMDb Rating</FormLabel>
                           <FormControl>
-                            <Input placeholder="7.8" {...field} />
+                            <Input
+                              placeholder="7.8"
+                              {...field}
+                              onChange={(e) => field.onChange(+e.target.value)}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -171,7 +273,11 @@ export default function Admin() {
                         <FormItem>
                           <FormLabel>Year</FormLabel>
                           <FormControl>
-                            <Input placeholder="2021" {...field} />
+                            <Input
+                              placeholder="2021"
+                              {...field}
+                              onChange={(e) => field.onChange(+e.target.value)}
+                            />
                           </FormControl>
 
                           <FormMessage />
@@ -186,7 +292,11 @@ export default function Admin() {
                         <FormItem>
                           <FormLabel>Runtime</FormLabel>
                           <FormControl>
-                            <Input placeholder="158" {...field} />
+                            <Input
+                              placeholder="158"
+                              {...field}
+                              onChange={(e) => field.onChange(+e.target.value)}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
