@@ -33,6 +33,8 @@ import { CheckIcon, X } from "lucide-react";
 import Image from "next/image";
 import { ControllerRenderProps, useForm } from "react-hook-form";
 import { z } from "zod";
+import { addMovie } from "./_actions/movie";
+import { useFormStatus } from "react-dom";
 
 const FormSchema = z
   .object({
@@ -98,6 +100,7 @@ export default function Admin() {
 
   function onSubmit(data: FormSchemaType) {
     console.log({ data });
+    addMovie(data);
   }
 
   const handleSelectGenre = (
@@ -127,7 +130,7 @@ export default function Admin() {
   return (
     <div className="bg-[url('/admin-bg.png')] bg-contain bg-center h-screen flex items-center justify-center ">
       <Card className="max-w-7xl w-full py-8 overflow-y-auto">
-        <CardContent className="max-w-xl w-full m-auto ">
+        <CardContent className="max-w-xl w-full m-auto">
           <ScrollArea className="h-[80vh] px-2 ">
             <div className="px-2 h-full ">
               <div className="flex items-center justify-center">
@@ -330,9 +333,10 @@ export default function Admin() {
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" className="w-full">
+                  {/* <Button type="submit" className="w-full">
                     Save
-                  </Button>
+                  </Button> */}
+                  <SubmitButton />
                 </form>
               </Form>
             </div>
@@ -340,5 +344,15 @@ export default function Admin() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button type="submit" disabled={pending}>
+      {pending ? "Saving..." : "Save"}
+    </Button>
   );
 }
