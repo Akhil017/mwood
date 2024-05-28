@@ -27,48 +27,16 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
+import { cn, prismaErrHandler } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CheckIcon, X } from "lucide-react";
+import { CheckIcon, Loader, X } from "lucide-react";
 import Image from "next/image";
 import { ControllerRenderProps, useForm } from "react-hook-form";
 import { z } from "zod";
 import { addMovie } from "./_actions/movie";
-import { useFormStatus } from "react-dom";
-
-const FormSchema = z
-  .object({
-    title: z
-      .string({ required_error: "Please give a movie title" })
-      .min(1, { message: "Title should be minimum of length 1" }),
-    year: z.number({ required_error: "Please give year of release" }),
-    imdbRating: z.number({
-      required_error: "Please give IMDB rating for the movie",
-    }),
-    runtime: z.number({ required_error: "Please runtime in minutes" }),
-    genre: z
-      .array(z.string({ required_error: "Please give the movie genre" }))
-      .min(1, { message: "Select atleast one genre" }),
-    plot: z.string({ required_error: "Please give plot of the movie" }),
-    poster: z.string().optional(),
-    trailer: z.string().optional(),
-  })
-  .superRefine((values, ctx) => {
-    console.log({ values, ctx });
-
-    if (!values.trailer && !values.poster) {
-      ctx.addIssue({
-        message: "Either poster or trailer should be filled in.",
-        code: z.ZodIssueCode.custom,
-        path: ["poster"],
-      });
-      ctx.addIssue({
-        message: "Either poster or trailer should be filled in.",
-        code: z.ZodIssueCode.custom,
-        path: ["trailer"],
-      });
-    }
-  });
+import { useState } from "react";
+import { toast } from "sonner";
+import { FormSchema } from "@/lib/schema";
 
 const GENRES = [
   {
@@ -88,6 +56,8 @@ const GENRES = [
 export type FormSchemaType = z.infer<typeof FormSchema>;
 
 export default function Admin() {
+  const [isLoading, setIsLoading] = useState(false);
+
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -98,9 +68,16 @@ export default function Admin() {
     },
   });
 
-  function onSubmit(data: FormSchemaType) {
-    console.log({ data });
-    addMovie(data);
+  async function onSubmit(data: FormSchemaType) {
+    setIsLoading(true);
+    try {
+      await addMovie(data);
+      toast.success("Movie added successfully!");
+    } catch (error) {
+      prismaErrHandler(error);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   const handleSelectGenre = (
@@ -333,10 +310,16 @@ export default function Admin() {
                       </FormItem>
                     )}
                   />
-                  {/* <Button type="submit" className="w-full">
-                    Save
-                  </Button> */}
-                  <SubmitButton />
+                  <Button type="submit" className="w-full">
+                    {isLoading ? (
+                      <div className="flex items-center justify-center">
+                        <Loader className="mr-2 h-4 w-4 animate-spin" />
+                        Saving...
+                      </div>
+                    ) : (
+                      "Save"
+                    )}
+                  </Button>
                 </form>
               </Form>
             </div>
@@ -344,15 +327,5 @@ export default function Admin() {
         </CardContent>
       </Card>
     </div>
-  );
-}
-
-function SubmitButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <Button type="submit" disabled={pending}>
-      {pending ? "Saving..." : "Save"}
-    </Button>
   );
 }

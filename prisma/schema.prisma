@@ -14,7 +14,7 @@ datasource db {
 
 model Movie{
   id String @id @default(uuid())
-  title String
+  title String @unique
   year Int
   imdbRating Float
   runtime Int

@@ -1,8 +1,11 @@
+import ErrorFallback from "@/components/error-fallback";
+import { Toaster } from "@/components/ui/sonner";
+import { cn } from "@/lib/utils";
+import { AlertCircle, CircleCheck, Info, Loader2, XCircle } from "lucide-react";
 import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";
-import { cn } from "@/lib/utils";
+import { ErrorBoundary } from "react-error-boundary";
 import "./globals.css";
-import { Toaster } from "@/components/ui/sonner";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -27,8 +30,18 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
-        {children}
-        <Toaster />
+        <ErrorBoundary FallbackComponent={ErrorFallback}>
+          {children}
+          <Toaster
+            icons={{
+              success: <CircleCheck className="text-green-600 " />,
+              info: <Info />,
+              warning: <AlertCircle className="text-orange-600 " />,
+              error: <XCircle className="text-destructive " />,
+              loading: <Loader2 />,
+            }}
+          />
+        </ErrorBoundary>
       </body>
     </html>
   );
