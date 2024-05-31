@@ -18,3 +18,7 @@ export async function addMovie(formData: z.infer<typeof FormSchema>) {
     },
   });
 }
+
+export async function addGenre(movies: Array<{ name: string }>) {
+  return await prisma.genre.createMany({ data: movies });
+}
