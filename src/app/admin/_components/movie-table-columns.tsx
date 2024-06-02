@@ -5,6 +5,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Movie } from "@/lib/schema";
 import { DataTableColumnHeader } from "./data-table/data-table-column-header";
 import { DataTableRowActions } from "./data-table/data-table-row-actions";
+import Image from "next/image";
+import { ExternalLink } from "lucide-react";
 
 export const movieTableColumns: ColumnDef<Movie>[] = [
   {
@@ -21,12 +23,14 @@ export const movieTableColumns: ColumnDef<Movie>[] = [
       />
     ),
     cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-        className="translate-y-[2px]"
-      />
+      <div className="w-8">
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+          className="translate-y-[2px]"
+        />
+      </div>
     ),
     enableSorting: false,
     enableHiding: false,
@@ -92,7 +96,7 @@ export const movieTableColumns: ColumnDef<Movie>[] = [
   {
     accessorKey: "imdbRating",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="imdb Rating" />
+      <DataTableColumnHeader column={column} title="IMDb Rating" />
     ),
     cell: ({ row }) => {
       return (
@@ -110,10 +114,19 @@ export const movieTableColumns: ColumnDef<Movie>[] = [
       <DataTableColumnHeader column={column} title="Runtime" />
     ),
     cell: ({ row }) => {
+      const runtime = Number(row.getValue("runtime"));
+
+      if (isNaN(runtime)) {
+        return null;
+      }
+
+      const hours = Math.floor(runtime / 60);
+      const minutes = runtime % 60;
+
       return (
         <div className="flex space-x-2">
-          <span className="max-w-[50px] truncate font-medium">
-            {row.getValue("runtime")}
+          <span className="max-w-[100px] truncate font-medium">
+            {`${hours}h ${minutes}m`}
           </span>
         </div>
       );
@@ -126,10 +139,14 @@ export const movieTableColumns: ColumnDef<Movie>[] = [
     ),
     cell: ({ row }) => {
       return (
-        <div className="flex space-x-2">
-          <span className="max-w-[500px] truncate font-medium">
-            {row.getValue("trailer")}
-          </span>
+        <div className="truncate font-medium ">
+          <a
+            className="flex gap-2 items-center justify-start hover:text-blue-600"
+            href={row.getValue("trailer")}
+            target="_blank"
+          >
+            <ExternalLink className="w-4 h-4" /> trailer link
+          </a>
         </div>
       );
     },
@@ -141,10 +158,19 @@ export const movieTableColumns: ColumnDef<Movie>[] = [
     ),
     cell: ({ row }) => {
       return (
-        <div className="flex space-x-2">
-          <span className="max-w-[500px] truncate font-medium">
-            {row.getValue("poster")}
-          </span>
+        <div
+          style={{
+            position: "relative",
+            width: `${70}px`,
+            height: `${100}px`,
+          }}
+        >
+          <Image
+            src={row.getValue("poster")}
+            alt={`${row.getValue("title")} poster`}
+            fill
+            style={{ objectFit: "cover" }}
+          />
         </div>
       );
     },
