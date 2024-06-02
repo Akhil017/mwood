@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -7,22 +6,24 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CircleUser } from "lucide-react";
 import Image from "next/image";
 import { getMovies } from "./_actions/movie";
 import { DataTable } from "./_components/data-table";
 import { movieTableColumns } from "./_components/movie-table-columns";
+import ProfileDropdown from "./_components/profile-dropdown";
 
-export default async function Dashboard() {
+type AdminDashboardProps = {
+  searchParams: {
+    [key: string]: string | string[] | undefined;
+  };
+};
+
+export default async function AdminDashboard({
+  searchParams,
+}: AdminDashboardProps) {
+  console.log({ searchParams });
   const [movieCount, movies] = await getMovies();
 
   return (
@@ -39,26 +40,7 @@ export default async function Dashboard() {
 
         <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4 ">
           <div className="flex-1 ml-auto  flex items-center justify-end">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="secondary"
-                  size="icon"
-                  className="rounded-full h-8 w-8"
-                >
-                  <CircleUser className="h-5 w-5" />
-                  <span className="sr-only">Toggle user menu</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Settings</DropdownMenuItem>
-                <DropdownMenuItem>Support</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Logout</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <ProfileDropdown />
           </div>
         </div>
       </header>

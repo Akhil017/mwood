@@ -35,3 +35,13 @@ export const MovieSchema = z
   });
 
 export type Movie = z.infer<typeof MovieSchema>;
+
+export const LoginSchema = z.object({
+  email: z
+    .string()
+    .min(1, { message: "Please enter your email." })
+    .email("This is not a valid email."),
+  password: z.string({ required_error: "Please enter your password" }),
+});
+
+export type LoginData = z.infer<typeof LoginSchema>;

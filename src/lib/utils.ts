@@ -7,7 +7,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function prismaErrHandler(error: any) {
-  toast.error("Failed to add movie", {
+  toast.error("Action Failed", {
     description: error.message || JSON.stringify(error),
   });
 }

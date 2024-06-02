@@ -1,5 +1,6 @@
 "use client";
 
+import ImageBackground from "@/components/image-background";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Movie, MovieSchema } from "@/lib/schema";
@@ -73,13 +74,5 @@ export default function Admin() {
     field.onChange(filteredGenres);
   };
 
-  return (
-    <div className="bg-[url('/admin-bg.png')] bg-contain bg-center h-screen flex items-center justify-center">
-      <Card className="max-w-7xl w-full py-8 overflow-y-auto bg-secondary">
-        <CardContent className="max-w-xl w-full m-auto">
-          <ScrollArea className="h-[80vh] px-2"></ScrollArea>
-        </CardContent>
-      </Card>
-    </div>
-  );
+  return <ImageBackground>recomendation page</ImageBackground>;
 }
