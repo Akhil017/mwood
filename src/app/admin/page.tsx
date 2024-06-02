@@ -19,8 +19,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CircleUser } from "lucide-react";
 import Image from "next/image";
 import { getMovies } from "./_actions/movie";
-import { columns } from "./_components/data-table/columns";
 import { DataTable } from "./_components/data-table";
+import { movieTableColumns } from "./_components/movie-table-columns";
 
 export default async function Dashboard() {
   const [movieCount, movies] = await getMovies();
@@ -63,7 +63,7 @@ export default async function Dashboard() {
         </div>
       </header>
       <main className="flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 bg-muted/40 p-4 md:gap-8 md:p-6">
-        <div className="mx-auto grid w-full max-w-7xl gap-4">
+        <div className="mx-auto grid w-full max-w-7xl gap-4 overflow-hidden">
           <Tabs defaultValue="movies">
             <div className="flex items-center">
               <TabsList>
@@ -74,7 +74,7 @@ export default async function Dashboard() {
             <TabsContent value="movies">
               <DataTable
                 data={movies}
-                columns={columns}
+                columns={movieTableColumns}
                 rowCount={movieCount}
               />
             </TabsContent>
