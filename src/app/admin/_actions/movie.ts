@@ -1,10 +1,9 @@
 "use server";
 
 import prisma from "@/db";
-import { FormSchema } from "@/lib/schema";
-import { z } from "zod";
+import { Movie } from "@/lib/schema";
 
-export async function addMovie(formData: z.infer<typeof FormSchema>) {
+export async function addMovie(formData: Movie) {
   return await prisma.movie.create({
     data: {
       title: formData.title,
@@ -21,4 +20,14 @@ export async function addMovie(formData: z.infer<typeof FormSchema>) {
 
 export async function addGenre(movies: Array<{ name: string }>) {
   return await prisma.genre.createMany({ data: movies });
+}
+
+export async function getMovies() {
+  return await prisma.$transaction([
+    prisma.movie.count(),
+    prisma.movie.findMany({
+      skip: 0,
+      take: 5,
+    }),
+  ]);
 }

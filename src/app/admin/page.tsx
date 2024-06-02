@@ -18,13 +18,23 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CircleUser } from "lucide-react";
 import Image from "next/image";
+import { getMovies } from "./_actions/movie";
+import { columns } from "./_components/data-table/columns";
+import { DataTable } from "./_components/data-table";
 
-export default function Dashboard() {
+export default async function Dashboard() {
+  const [movieCount, movies] = await getMovies();
+
   return (
     <div className="flex min-h-screen w-full flex-col">
-      <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
+      <header className="sticky top-0 z-10 flex h-12 items-center gap-4 border-b bg-background px-4 md:px-6">
         <div>
-          <Image src="/logo-2.svg" width={60} height={60} alt="logo" />
+          <Image
+            src="/logo-without-text.svg"
+            width={40}
+            height={40}
+            alt="logo"
+          />
         </div>
 
         <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4 ">
@@ -34,7 +44,7 @@ export default function Dashboard() {
                 <Button
                   variant="secondary"
                   size="icon"
-                  className="rounded-full"
+                  className="rounded-full h-8 w-8"
                 >
                   <CircleUser className="h-5 w-5" />
                   <span className="sr-only">Toggle user menu</span>
@@ -52,9 +62,8 @@ export default function Dashboard() {
           </div>
         </div>
       </header>
-      <main className="flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 bg-muted/40 p-4 md:gap-8 md:p-10">
+      <main className="flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 bg-muted/40 p-4 md:gap-8 md:p-6">
         <div className="mx-auto grid w-full max-w-7xl gap-4">
-          {/* <h1 className="text-2xl font-semibold">Admin Dashboard</h1> */}
           <Tabs defaultValue="movies">
             <div className="flex items-center">
               <TabsList>
@@ -63,18 +72,11 @@ export default function Dashboard() {
               </TabsList>
             </div>
             <TabsContent value="movies">
-              <Card x-chunk="dashboard-06-chunk-0">
-                <CardHeader>
-                  <CardTitle>Movies</CardTitle>
-                  <CardDescription>Manage your movies</CardDescription>
-                </CardHeader>
-                <CardContent>table goes here!</CardContent>
-                <CardFooter>
-                  <div className="text-xs text-muted-foreground">
-                    Showing <strong>1-10</strong> of <strong>32</strong> movies
-                  </div>
-                </CardFooter>
-              </Card>
+              <DataTable
+                data={movies}
+                columns={columns}
+                rowCount={movieCount}
+              />
             </TabsContent>
             <TabsContent value="genres">
               <Card x-chunk="dashboard-06-chunk-0">

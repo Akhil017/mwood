@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const FormSchema = z
+export const MovieSchema = z
   .object({
     title: z
       .string({ required_error: "Please give a movie title" })
@@ -33,3 +33,5 @@ export const FormSchema = z
       });
     }
   });
+
+export type Movie = z.infer<typeof MovieSchema>;

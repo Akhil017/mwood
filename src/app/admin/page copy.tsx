@@ -32,11 +32,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckIcon, Loader, X } from "lucide-react";
 import Image from "next/image";
 import { ControllerRenderProps, useForm } from "react-hook-form";
-import { z } from "zod";
 import { addMovie } from "./_actions/movie";
 import { useState } from "react";
 import { toast } from "sonner";
-import { FormSchema } from "@/lib/schema";
+import { Movie, MovieSchema } from "@/lib/schema";
 
 const GENRES = [
   {
@@ -53,13 +52,11 @@ const GENRES = [
   },
 ];
 
-export type FormSchemaType = z.infer<typeof FormSchema>;
-
 export default function Admin() {
   const [isLoading, setIsLoading] = useState(false);
 
-  const form = useForm<FormSchemaType>({
-    resolver: zodResolver(FormSchema),
+  const form = useForm<Movie>({
+    resolver: zodResolver(MovieSchema),
     defaultValues: {
       title: "",
       genre: [],
@@ -68,7 +65,7 @@ export default function Admin() {
     },
   });
 
-  async function onSubmit(data: FormSchemaType) {
+  async function onSubmit(data: Movie) {
     setIsLoading(true);
     try {
       await addMovie(data);
@@ -84,7 +81,7 @@ export default function Admin() {
   const handleSelectGenre = (
     selectedGenre: string,
     isSelected: boolean,
-    field: ControllerRenderProps<FormSchemaType, "genre">
+    field: ControllerRenderProps<Movie, "genre">
   ) => {
     if (isSelected) {
       const updatedOptions = field.value.filter(
@@ -99,7 +96,7 @@ export default function Admin() {
 
   const handleRemoveGenre = (
     genre: string,
-    field: ControllerRenderProps<FormSchemaType, "genre">
+    field: ControllerRenderProps<Movie, "genre">
   ) => {
     const filteredGenres = field.value.filter((g) => g !== genre);
     field.onChange(filteredGenres);
