@@ -1,8 +1,12 @@
-"use client";
-
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import {
   Command,
   CommandEmpty,
@@ -19,46 +23,64 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { cn, prismaErrHandler } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckIcon, Loader, X } from "lucide-react";
-import Image from "next/image";
 import { ControllerRenderProps, useForm } from "react-hook-form";
-import { addMovie } from "./_actions/movie";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Movie, MovieSchema } from "@/lib/schema";
+import { addMovie, getGenres, updateMovie } from "../_actions/movie";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
-const GENRES = [
-  {
-    label: "Action",
-    value: "Action",
-  },
-  {
-    label: "Thriller",
-    value: "Thriller",
-  },
-  {
-    label: "Comedy",
-    value: "Comedy",
-  },
-];
+type AddMovieDialogProps = {
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+} & (
+  | { isEdit?: false; initialValue?: undefined }
+  | { isEdit: true; initialValue: Movie }
+);
 
-export default function Admin() {
+export default function AddMovieDialog({
+  isOpen,
+  setIsOpen,
+  isEdit = false,
+  initialValue,
+}: AddMovieDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [genres, setGenres] = useState<Array<{ label: string; value: string }>>(
+    []
+  );
+
+  useEffect(() => {
+    const fetchGenres = async () => {
+      try {
+        const res = await getGenres();
+        const genreOptions = res.map((genre) => ({
+          label: genre.name,
+          value: genre.name,
+        }));
+        setGenres(genreOptions);
+      } catch (error) {
+        console.log({ error });
+      }
+    };
+
+    fetchGenres();
+  }, []);
 
   const form = useForm<Movie>({
     resolver: zodResolver(MovieSchema),
-    defaultValues: {
+    defaultValues: initialValue || {
       title: "",
+      plot: "",
       genre: [],
       poster: "",
       trailer: "",
@@ -68,9 +90,23 @@ export default function Admin() {
   async function onSubmit(data: Movie) {
     setIsLoading(true);
     try {
-      await addMovie(data);
-      toast.success("Movie added successfully!");
-      form.reset();
+      if (isEdit) {
+        await updateMovie(data);
+      } else {
+        await addMovie(data);
+      }
+      if (isEdit) {
+        toast.success("Movie updated successfully!");
+      } else {
+        toast.success("Movie added successfully!");
+        form.reset({
+          title: "",
+          plot: "",
+          genre: [],
+          poster: "",
+          trailer: "",
+        });
+      }
     } catch (error) {
       prismaErrHandler(error);
     } finally {
@@ -103,17 +139,14 @@ export default function Admin() {
   };
 
   return (
-    <div className="bg-[url('/admin-bg.png')] bg-contain bg-center h-screen flex items-center justify-center ">
-      <Card className="max-w-7xl w-full py-8 overflow-y-auto">
-        <CardContent className="max-w-xl w-full m-auto">
-          <ScrollArea className="h-[80vh] px-2 ">
-            <div className="px-2 h-full ">
-              <div className="flex items-center justify-center">
-                <Image src="/logo.svg" width={60} height={60} alt="logo" />
-              </div>
-              <CardHeader className="px-0 pt-0 mt-4">
-                <CardTitle>Add Movie</CardTitle>
-              </CardHeader>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogContent className="sm:max-w-7xl w-full">
+        <div className="max-w-lg w-full mx-auto">
+          <ScrollArea className="h-[90vh] px-2 ">
+            <DialogHeader>
+              <DialogTitle>Add Movie</DialogTitle>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
@@ -171,7 +204,7 @@ export default function Admin() {
                               <CommandList>
                                 <CommandEmpty>No results found.</CommandEmpty>
                                 <CommandGroup>
-                                  {GENRES.map((option) => {
+                                  {genres.map((option) => {
                                     const isSelected = field.value.includes(
                                       option.value
                                     );
@@ -206,7 +239,7 @@ export default function Admin() {
                             </Command>
                           </PopoverContent>
                         </Popover>
-                        <div className="flex gap-2 mt-2.5">
+                        <div className="flex gap-2 mt-2.5 flex-wrap">
                           {field.value.map((genre) => (
                             <Badge
                               key={genre}
@@ -235,9 +268,14 @@ export default function Admin() {
                           <FormLabel>IMDb Rating</FormLabel>
                           <FormControl>
                             <Input
+                              type="number"
                               placeholder="7.8"
                               {...field}
-                              onChange={(e) => field.onChange(+e.target.value)}
+                              onChange={(e) => {
+                                const val = parseFloat(e.target.value);
+                                console.log({ val });
+                                field.onChange(val);
+                              }}
                             />
                           </FormControl>
                           <FormMessage />
@@ -252,6 +290,7 @@ export default function Admin() {
                           <FormLabel>Year</FormLabel>
                           <FormControl>
                             <Input
+                              type="number"
                               placeholder="2021"
                               {...field}
                               onChange={(e) => field.onChange(+e.target.value)}
@@ -271,6 +310,7 @@ export default function Admin() {
                           <FormLabel>Runtime</FormLabel>
                           <FormControl>
                             <Input
+                              type="number"
                               placeholder="158"
                               {...field}
                               onChange={(e) => field.onChange(+e.target.value)}
@@ -322,8 +362,8 @@ export default function Admin() {
               </Form>
             </div>
           </ScrollArea>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }

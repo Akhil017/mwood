@@ -9,13 +9,13 @@ export const MovieSchema = z
     imdbRating: z.number({
       required_error: "Please give IMDB rating for the movie",
     }),
-    runtime: z.number({ required_error: "Please runtime in minutes" }),
+    runtime: z.number({ required_error: "Please give runtime in minutes" }),
     genre: z
       .array(z.string({ required_error: "Please give the movie genre" }))
       .min(1, { message: "Select atleast one genre" }),
     plot: z.string({ required_error: "Please give plot of the movie" }),
-    poster: z.string().optional(),
-    trailer: z.string().optional(),
+    poster: z.string().url().optional(),
+    trailer: z.string().url().optional(),
   })
   .superRefine((values, ctx) => {
     console.log({ values, ctx });

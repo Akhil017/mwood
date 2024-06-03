@@ -55,6 +55,9 @@ export function DataTable<TData, TValue>({
       rowSelection,
       columnFilters,
     },
+    initialState: {
+      pagination: { pageSize: 50 },
+    },
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
@@ -69,7 +72,7 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="space-y-4 flex flex-col h-[calc(100vh_-_140px)]">
+    <div className="space-y-4 flex flex-col h-[calc(100vh_-_100px)]">
       <DataTableToolbar table={table} />
       <div className="relative rounded-md border flex-1 max-w-7xl overflow-auto w-full">
         <Table>

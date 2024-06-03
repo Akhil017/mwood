@@ -7,6 +7,7 @@ import { DataTableColumnHeader } from "./data-table/data-table-column-header";
 import { DataTableRowActions } from "./data-table/data-table-row-actions";
 import Image from "next/image";
 import { ExternalLink } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 export const movieTableColumns: ColumnDef<Movie>[] = [
   {
@@ -55,9 +56,14 @@ export const movieTableColumns: ColumnDef<Movie>[] = [
       <DataTableColumnHeader column={column} title="Genre" />
     ),
     cell: ({ row }) => {
+      const genres: string[] = row.getValue("genre");
       return (
         <div className="flex space-x-2">
-          <span className="font-medium">{row.getValue("genre")}</span>
+          {genres.map((genre) => (
+            <Badge key={genre} variant="outline" className="rounded-full">
+              {genre}
+            </Badge>
+          ))}
         </div>
       );
     },
@@ -139,7 +145,7 @@ export const movieTableColumns: ColumnDef<Movie>[] = [
     ),
     cell: ({ row }) => {
       return (
-        <div className="truncate font-medium ">
+        <div className="w-[150px] truncate font-medium ">
           <a
             className="flex gap-2 items-center justify-start hover:text-blue-600"
             href={row.getValue("trailer")}

@@ -2,6 +2,7 @@
 
 import prisma from "@/db";
 import { Movie } from "@/lib/schema";
+import { revalidatePath } from "next/cache";
 
 export async function addMovie(formData: Movie) {
   return await prisma.movie.create({
@@ -16,18 +17,31 @@ export async function addMovie(formData: Movie) {
       genre: formData.genre,
     },
   });
+  // revalidatePath("/admin");
 }
 
-export async function addGenre(movies: Array<{ name: string }>) {
-  return await prisma.genre.createMany({ data: movies });
+export async function updateMovie(formData: Movie) {
+  await prisma.movie.update({
+    where: {
+      title: formData.title,
+    },
+    data: formData,
+  });
+
+  revalidatePath("/admin");
+}
+
+export async function addGenre(genres: Array<{ name: string }>) {
+  return await prisma.genre.createMany({ data: genres });
 }
 
 export async function getMovies() {
   return await prisma.$transaction([
     prisma.movie.count(),
-    prisma.movie.findMany({
-      skip: 0,
-      take: 5,
-    }),
+    prisma.movie.findMany(),
   ]);
+}
+
+export async function getGenres() {
+  return await prisma.genre.findMany();
 }
