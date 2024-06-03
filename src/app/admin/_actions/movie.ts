@@ -17,7 +17,7 @@ export async function addMovie(formData: Movie) {
       genre: formData.genre,
     },
   });
-  // revalidatePath("/admin");
+  revalidatePath("/admin");
 }
 
 export async function updateMovie(formData: Movie) {

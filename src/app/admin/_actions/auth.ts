@@ -6,7 +6,6 @@ import { LoginData } from "@/lib/schema";
 import bcryptjs from "bcryptjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { NextRequest, NextResponse } from "next/server";
 
 export async function login(loginData: LoginData) {
   const { email, password } = loginData;
@@ -37,23 +36,6 @@ export async function logout() {
   // Destroy the session
   cookies().set("session", "", { expires: new Date(0) });
   redirect("/admin/login");
-}
-
-export async function updateSession(request: NextRequest) {
-  const session = request.cookies.get("session")?.value;
-  if (!session) return;
-
-  // Refresh the session so it doesn't expire
-  const parsed = await decrypt(session);
-  parsed.expires = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
-  const res = NextResponse.next();
-  res.cookies.set({
-    name: "session",
-    value: await encrypt(parsed),
-    httpOnly: true,
-    expires: parsed.expires,
-  });
-  return res;
 }
 
 export async function getSession() {

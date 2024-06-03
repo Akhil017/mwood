@@ -1,78 +1,50 @@
-"use client";
-
 import ImageBackground from "@/components/image-background";
-import { Card, CardContent } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Movie, MovieSchema } from "@/lib/schema";
-import { prismaErrHandler } from "@/lib/utils";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
-import { ControllerRenderProps, useForm } from "react-hook-form";
-import { toast } from "sonner";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Laugh } from "lucide-react";
+import Image from "next/image";
 
-const GENRES = [
-  {
-    label: "Action",
-    value: "Action",
-  },
-  {
-    label: "Thriller",
-    value: "Thriller",
-  },
-  {
-    label: "Comedy",
-    value: "Comedy",
-  },
+const MOODS = [
+  { icon: <Laugh className="text-foreground" />, mood: "CHEERFUL" },
+  { icon: <Laugh className="text-foreground" />, mood: "REFLECTIVE" },
+  { icon: <Laugh className="text-foreground" />, mood: "GLOOMY" },
+  { icon: <Laugh className="text-foreground" />, mood: "HUMOROUS" },
+  { icon: <Laugh className="text-foreground" />, mood: "CHILL" },
+  { icon: <Laugh className="text-foreground" />, mood: "ROMANTIC" },
+  { icon: <Laugh className="text-foreground" />, mood: "ANGRY" },
+  { icon: <Laugh className="text-foreground" />, mood: "THRILLED" },
 ];
 
 export default function Admin() {
-  const [isLoading, setIsLoading] = useState(false);
-
-  const form = useForm<Movie>({
-    resolver: zodResolver(MovieSchema),
-    defaultValues: {
-      title: "",
-      genre: [],
-      poster: "",
-      trailer: "",
-    },
-  });
-
-  async function onSubmit(data: Movie) {
-    setIsLoading(true);
-    try {
-      toast.success("Movie added successfully!");
-      form.reset();
-    } catch (error) {
-      prismaErrHandler(error);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  const handleSelectGenre = (
-    selectedGenre: string,
-    isSelected: boolean,
-    field: ControllerRenderProps<Movie, "genre">
-  ) => {
-    if (isSelected) {
-      const updatedOptions = field.value.filter(
-        (genre) => genre !== selectedGenre
-      );
-      field.onChange(updatedOptions);
-    } else {
-      const updatedOptions = [...field.value, selectedGenre];
-      field.onChange(updatedOptions);
-    }
-  };
-
-  const handleRemoveGenre = (
-    genre: string,
-    field: ControllerRenderProps<Movie, "genre">
-  ) => {
-    const filteredGenres = field.value.filter((g) => g !== genre);
-    field.onChange(filteredGenres);
-  };
-
-  return <ImageBackground>recomendation page</ImageBackground>;
+  return (
+    <ImageBackground>
+      <div className="space-y-8">
+        <div className="flex flex-col gap-1 items-center justify-center text-center">
+          <Image
+            src="/logo-without-text.svg"
+            width={40}
+            height={40}
+            alt="logo"
+          />
+          <h1 className="text-xl lg:text-4xl font-bold text-foreground">
+            Get top rated malayalam movies based on your mood
+          </h1>
+          <p className="text-base lg:text-xl">How are you feeling today?</p>
+        </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {MOODS.map((mood) => (
+            <Card key={mood.mood} className="shadow-xs bg-secondary">
+              <CardContent className="p-4 flex items-center flex-col justify-center gap-2">
+                <CardHeader className="p-0">
+                  <CardTitle className="text-sm lg:text-xl">
+                    {mood.mood}
+                  </CardTitle>
+                </CardHeader>
+                <div className="text-xs text-muted-foreground">{mood.icon}</div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </ImageBackground>
+  );
 }
