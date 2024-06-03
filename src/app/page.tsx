@@ -17,22 +17,20 @@ const MOODS = [
 export default function Admin() {
   return (
     <ImageBackground>
-      <div className="space-y-8">
+      <div className="space-y-8 lg:space-y-16">
         <div className="flex flex-col gap-1 items-center justify-center text-center">
-          <Image
-            src="/logo-without-text.svg"
-            width={40}
-            height={40}
-            alt="logo"
-          />
-          <h1 className="text-xl lg:text-4xl font-bold text-foreground">
+          <Image src="/logo.svg" width={40} height={40} alt="logo" />
+          <h1 className="text-xl lg:text-4xl font-semibold text-foreground">
             Get top rated malayalam movies based on your mood
           </h1>
           <p className="text-base lg:text-xl">How are you feeling today?</p>
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {MOODS.map((mood) => (
-            <Card key={mood.mood} className="shadow-xs bg-secondary">
+            <Card
+              key={mood.mood}
+              className="shadow-xs bg-secondary hover:bg-background hover:border-primary duration-300"
+            >
               <CardContent className="p-4 flex items-center flex-col justify-center gap-2">
                 <CardHeader className="p-0">
                   <CardTitle className="text-sm lg:text-xl">
