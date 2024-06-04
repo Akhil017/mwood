@@ -46,11 +46,11 @@ export default function Home() {
                 <Link
                   href={`/movie?mood=${mood.mood}`}
                   key={mood.mood}
-                  className="shadow-xs bg-black/85 hover:bg-primary hover:border-primary duration-300 rounded-xl group border "
+                  className="shadow-xs bg-background hover:bg-primary hover:border-primary duration-300 rounded-xl group border "
                 >
                   <div className="p-4 flex items-center flex-col justify-center gap-2">
                     <div className="p-0">
-                      <h4 className="text-muted/70 text-sm lg:text-lg font-semibold group-hover:text-black">
+                      <h4 className="text-foreground/80 text-sm lg:text-lg font-semibold group-hover:text-black">
                         {mood.mood}
                       </h4>
                     </div>
