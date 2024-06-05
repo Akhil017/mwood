@@ -42,7 +42,11 @@ export function DataTableToolbar<TData>({
           )}
         </div>
         <DataTableViewOptions table={table} />
-        <Button size="sm" className="h-8 ml-4" onClick={() => setIsOpen(true)}>
+        <Button
+          size="sm"
+          className="h-8 ml-4 text-black"
+          onClick={() => setIsOpen(true)}
+        >
           Add Movie
         </Button>
       </div>

@@ -43,8 +43,8 @@ export default function Login() {
   }
 
   return (
-    <div className="flex flex-col w-full sm:max-w-sm items-center justify-center mx-auto min-h-[80vh]">
-      <Card className="w-full max-w-sm mx-auto  p-8">
+    <div className="flex flex-col w-full sm:max-w-lg items-center justify-center mx-auto min-h-[80vh]">
+      <Card className="w-full max-w-lg mx-auto  p-8">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -86,7 +86,11 @@ export default function Login() {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button
+              type="submit"
+              className="w-full text-black"
+              disabled={isLoading}
+            >
               {isLoading ? (
                 <div className="flex items-center justify-center">
                   <Loader className="mr-2 h-4 w-4 animate-spin" />
