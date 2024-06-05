@@ -46,8 +46,6 @@ export default function MovieInfo({ movies }: MovieInfoType) {
     }
   };
 
-  console.log({ m_l: movies.length, currentIndex });
-
   return (
     <Card>
       <CardContent className="p-0">

@@ -16,8 +16,6 @@ export default async function Movie({ searchParams }: MoviePageProps) {
   const genre = await getGenreByMood(mood);
   const genres = genre.map((g) => g.name);
   const movies = await getMoviesByGenres(genres);
-  console.log({ mood, genres });
-
   const shuffledMovies = shuffleMovies(movies);
 
   return (

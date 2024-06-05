@@ -18,8 +18,6 @@ export const MovieSchema = z
     trailer: z.string().url().optional(),
   })
   .superRefine((values, ctx) => {
-    console.log({ values, ctx });
-
     if (!values.trailer && !values.poster) {
       ctx.addIssue({
         message: "Either poster or trailer should be filled in.",

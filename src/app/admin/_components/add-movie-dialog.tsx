@@ -275,7 +275,6 @@ export default function AddMovieDialog({
                               {...field}
                               onChange={(e) => {
                                 const val = parseFloat(e.target.value);
-                                console.log({ val });
                                 field.onChange(val);
                               }}
                             />
