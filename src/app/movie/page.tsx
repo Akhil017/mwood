@@ -19,7 +19,7 @@ export default async function Movie({ searchParams }: MoviePageProps) {
   const shuffledMovies = shuffleMovies(movies);
 
   return (
-    <div className="max-w-2xl mx-auto w-full mt-32 lg:mt-8 p-4">
+    <div className="max-w-2xl mx-auto w-full mt-20 lg:mt-8 p-4">
       <div className="flex justify-between mb-4">
         <h1 className="text-xl lg:text-2xl font-semibold text-foreground flex gap-2 items-center">
           Feeling {mood}

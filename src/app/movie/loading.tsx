@@ -11,7 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Loading() {
   return (
-    <div className="max-w-2xl mx-auto w-full mt-24 lg:mt-10 p-4">
+    <div className="max-w-2xl mx-auto w-full mt-14 lg:mt-10 p-4">
       <div className="flex justify-between mb-4">
         <Skeleton className="h-10 w-full rounded-lg bg-secondary" />
       </div>
