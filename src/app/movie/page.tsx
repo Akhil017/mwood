@@ -1,20 +1,9 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import Image from "next/image";
-import { YoutubePlayer } from "./components/youtube-player";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import Image from "next/image";
 import Link from "next/link";
-import { ChevronsRight } from "lucide-react";
 import { getGenreByMood, getMoviesByGenres } from "./actions";
 import MovieInfo from "./components/movie-info";
+import { shuffleMovies } from "./utils";
 
 interface MoviePageProps {
   searchParams: {
@@ -28,6 +17,9 @@ export default async function Movie({ searchParams }: MoviePageProps) {
   const genres = genre.map((g) => g.name);
   const movies = await getMoviesByGenres(genres);
   console.log({ mood, genres });
+
+  const shuffledMovies = shuffleMovies(movies);
+
   return (
     <div className="max-w-2xl mx-auto w-full mt-32 lg:mt-16 p-4">
       <ScrollArea className="min-h-[90vh]">
@@ -48,7 +40,7 @@ export default async function Movie({ searchParams }: MoviePageProps) {
             Change Mood
           </Link>
         </div>
-        <MovieInfo movies={movies} />
+        <MovieInfo movies={shuffledMovies || []} />
       </ScrollArea>
     </div>
   );
