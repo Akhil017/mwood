@@ -46,8 +46,10 @@ export function DataTable<TData, TValue>({
   );
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
+  const defaultValue = React.useMemo(() => [], []);
+
   const table = useReactTable({
-    data,
+    data: data || defaultValue,
     columns,
     state: {
       sorting,

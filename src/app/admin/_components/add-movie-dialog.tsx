@@ -1,3 +1,5 @@
+"use client";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -71,9 +73,10 @@ export default function AddMovieDialog({
         console.log({ error });
       }
     };
-
-    fetchGenres();
-  }, []);
+    if (isOpen) {
+      fetchGenres();
+    }
+  }, [isOpen]);
 
   const form = useForm<Movie>({
     resolver: zodResolver(MovieSchema),

@@ -26,8 +26,13 @@ export async function decrypt(input: string): Promise<any> {
 }
 
 export async function updateSession(request: NextRequest) {
+  console.log(
+    "|||||||||||||||||||||||||||Updating Session|||||||||||||||||||||||||||"
+  );
   const session = request.cookies.get("session")?.value;
-  if (!session) return;
+  if (!session) {
+    return;
+  }
 
   // Refresh the session so it doesn't expire
 
@@ -44,6 +49,7 @@ export async function updateSession(request: NextRequest) {
     httpOnly: true,
     expires: parsed.expires,
   });
+  console.log("*******************returning session*********************");
   return res;
 }
 

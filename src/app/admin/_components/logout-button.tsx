@@ -7,6 +7,7 @@ import { LogOut } from "lucide-react";
 export default function LogoutButton() {
   return (
     <Button
+      className="w-full justify-start"
       variant="ghost"
       onClick={async () => {
         await logout();

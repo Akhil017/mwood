@@ -8,5 +8,5 @@ export const MOODS = [
   "Fearful",
   "Inspired",
   "Romantic",
-  "Nostalgic",
+  "Intense",
 ];
