@@ -25,7 +25,13 @@ export default function MovieInfo({ movies }: MovieInfoType) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   if (!movies.length) {
-    return <p>No movie found</p>;
+    return (
+      <Card>
+        <CardContent className="p-0 h-[400px] flex items-center justify-center">
+          No movies found
+        </CardContent>
+      </Card>
+    );
   }
 
   const videoId = movies[currentIndex]?.trailer
@@ -45,7 +51,7 @@ export default function MovieInfo({ movies }: MovieInfoType) {
   return (
     <Card>
       <CardContent className="p-0">
-        <div className="flex items-center justify-center p-4">
+        <div className="flex items-center justify-center p-4 h-[360px]">
           {videoId ? <YoutubePlayer videoId={videoId} /> : null}
         </div>
         <CardHeader className="pt-0 space-y-4">

@@ -8,26 +8,35 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { getSession } from "@/lib/auth";
-import { LogOut, User } from "lucide-react";
+import { User } from "lucide-react";
 import LogoutButton from "./logout-button";
 
-export default async function ProfileDropdown() {
-  const user = await getSession();
+type ProfileDropdownProps = {
+  user: {
+    name: string;
+    email: string;
+  };
+};
 
+export default function ProfileDropdown({ user }: ProfileDropdownProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
-            <AvatarFallback>
+          <Avatar className="h-8 w-8 bg-primary">
+            <AvatarFallback className="bg-primary text-black font-semibold">
               {user ? user?.name?.toUpperCase().slice(0, 2) : <User />}
             </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
-        <DropdownMenuLabel className="font-normal">
+        <DropdownMenuLabel className="font-normal flex gap-2">
+          <Avatar className="h-8 w-8 bg-primary">
+            <AvatarFallback className="bg-primary text-black font-semibold">
+              {user ? user?.name?.toUpperCase().slice(0, 2) : <User />}
+            </AvatarFallback>
+          </Avatar>
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">
               {user ? user.name : ""}

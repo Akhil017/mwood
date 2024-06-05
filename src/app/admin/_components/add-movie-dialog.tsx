@@ -1,12 +1,5 @@
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import {
   Command,
   CommandEmpty,
@@ -16,6 +9,12 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   Form,
   FormControl,
   FormField,
@@ -23,22 +22,22 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
+import { Movie, MovieSchema } from "@/lib/schema";
 import { cn, prismaErrHandler } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckIcon, Loader, X } from "lucide-react";
-import { ControllerRenderProps, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
+import { ControllerRenderProps, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Movie, MovieSchema } from "@/lib/schema";
 import { addMovie, getGenres, updateMovie } from "../_actions/movie";
-import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 type AddMovieDialogProps = {
   isOpen: boolean;
@@ -329,7 +328,7 @@ export default function AddMovieDialog({
                       <FormItem>
                         <FormLabel>Trailer</FormLabel>
                         <FormControl>
-                          <Input placeholder="Minnal Murali" {...field} />
+                          <Input {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -342,22 +341,32 @@ export default function AddMovieDialog({
                       <FormItem>
                         <FormLabel>Poster</FormLabel>
                         <FormControl>
-                          <Input placeholder="Minnal Murali" {...field} />
+                          <Input {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" className="w-full">
-                    {isLoading ? (
-                      <div className="flex items-center justify-center">
-                        <Loader className="mr-2 h-4 w-4 animate-spin" />
-                        Saving...
-                      </div>
-                    ) : (
-                      "Save"
-                    )}
-                  </Button>
+                  <div className="flex gap-4">
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      className="w-full"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button type="submit" className="w-full">
+                      {isLoading ? (
+                        <div className="flex items-center justify-center">
+                          <Loader className="mr-2 h-4 w-4 animate-spin" />
+                          Saving...
+                        </div>
+                      ) : (
+                        "Save"
+                      )}
+                    </Button>
+                  </div>
                 </form>
               </Form>
             </div>

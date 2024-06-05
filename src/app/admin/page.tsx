@@ -1,9 +1,16 @@
-import MovieTable from "./_components/movie-table";
+import { getMovies } from "./_actions/movie";
+import { DataTable } from "./_components/data-table";
+import { movieTableColumns } from "./_components/movie-table-columns";
 
-export default function AdminDashboard() {
+export default async function AdminDashboard() {
+  const [movieCount, movies] = await getMovies();
   return (
-    <div className="bg-background px-8 min-h-[calc(100vh_-_theme(spacing.16))] py-4">
-      <MovieTable />
+    <div className="bg-background min-h-[calc(100vh_-_theme(spacing.16))] p-4 ">
+      <DataTable
+        data={movies}
+        columns={movieTableColumns}
+        rowCount={movieCount}
+      />
     </div>
   );
 }
