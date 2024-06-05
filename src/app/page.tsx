@@ -1,12 +1,11 @@
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { MOODS } from "@/lib/constants";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Home() {
   return (
-    <ScrollArea className="h-[90vh]">
-      <div className="mx-auto grid w-full max-w-6xl gap-2">
+    <div className="max-w-4xl mx-auto w-full mt-4 lg:mt-8 p-4">
+      <div className="mx-auto grid w-full max-w-6xl gap-2 ">
         <h1 className="text-white text-2xl lg:text-5xl font-semibold text-center">
           Discover top-rated malayalam movies based on your mood
         </h1>
@@ -36,6 +35,6 @@ export default function Home() {
           </Link>
         ))}
       </div>
-    </ScrollArea>
+    </div>
   );
 }

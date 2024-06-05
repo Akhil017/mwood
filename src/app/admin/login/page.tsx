@@ -1,6 +1,5 @@
 "use client";
 
-import ImageBackground from "@/components/image-background";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -18,6 +17,7 @@ import { login } from "../_actions/auth";
 import { prismaErrHandler } from "@/lib/utils";
 import { useState } from "react";
 import { Loader } from "lucide-react";
+import { Card } from "@/components/ui/card";
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
@@ -43,8 +43,8 @@ export default function Login() {
   }
 
   return (
-    <ImageBackground>
-      <div className="flex flex-col w-full sm:max-w-sm items-center justify-center h-[80vh] mx-auto">
+    <div className="flex flex-col w-full sm:max-w-sm items-center justify-center mx-auto min-h-[80vh]">
+      <Card className="w-full max-w-sm mx-auto  p-8">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -98,7 +98,7 @@ export default function Login() {
             </Button>
           </form>
         </Form>
-      </div>
-    </ImageBackground>
+      </Card>
+    </div>
   );
 }

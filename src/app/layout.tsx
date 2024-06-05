@@ -35,7 +35,7 @@ export default function RootLayout({
           <div className="bg-[url('/bg.png')] bg-no-repeat bg-cover bg-center h-screen flex items-center justify-center">
             <div className="flex min-h-screen w-full flex-col">
               <AppHeader />
-              <main className="flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 md:gap-8 max-w-4xl w-full mx-auto p-4 lg:p-0">
+              <main className="flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 md:gap-8  w-full p-0">
                 {children}
               </main>
             </div>

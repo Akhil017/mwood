@@ -1,16 +1,12 @@
 export const MOODS = [
   "Excited",
   "Joyful",
-  "Tensed",
   "Curious",
   "Emotional",
   "Heartwarming",
   "Wonderous",
-  "Reflective",
   "Fearful",
   "Inspired",
   "Romantic",
   "Nostalgic",
-  "Humorous",
-  "Gloomy",
 ];

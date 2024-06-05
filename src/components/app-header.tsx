@@ -4,10 +4,10 @@ import React from "react";
 
 export default function AppHeader() {
   return (
-    <header className="bg-transparent sticky top-0 flex h-16 items-center justify-between gap-4 px-4 md:px-6">
+    <header className="z-10 sticky top-0 flex h-16 items-center justify-between gap-4 px-4 md:px-6 border-b border-border/50 bg-transparent backdrop-blur supports-[backdrop-filter]:bg-background/40 ">
       <nav className=" flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
         <Link
-          href="#"
+          href="/"
           className="flex items-center gap-2 text-lg font-semibold md:text-base"
         >
           <Image src="/logo-white.svg" width={40} height={40} alt="logo" />
