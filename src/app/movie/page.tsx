@@ -19,7 +19,7 @@ interface MoviePageProps {
 }
 
 export default function Movie({ searchParams }: MoviePageProps) {
-  const mood = MOODS.find((mood) => mood.mood === searchParams.mood);
+  const mood = searchParams.mood as string;
 
   return (
     <div className="min-h-screen">
@@ -27,8 +27,13 @@ export default function Movie({ searchParams }: MoviePageProps) {
         <Image src="/logo.svg" width={40} height={40} alt="logo" />
         <div className="flex gap-2">
           <h1 className="text-xl lg:text-2xl font-semibold text-foreground flex gap-2 items-center">
-            Feeling {mood ? mood?.icon : null}
-            {mood ? mood?.mood : null}
+            Feeling {mood}
+            <Image
+              alt={`${mood} emoji`}
+              src={`/images/${mood?.toLowerCase?.()}.png`}
+              height={32}
+              width={32}
+            />
           </h1>
         </div>
       </div>
